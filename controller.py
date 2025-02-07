@@ -2,7 +2,8 @@ from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
 import sys
 
-from panda3d.core import CollisionNode, GeomNode, CollisionRay, CollisionHandlerQueue, CollisionTraverser
+from panda3d.core import CollisionNode, GeomNode, CollisionRay, CollisionHandlerQueue, CollisionTraverser, \
+    WindowProperties
 from pubsub import pub
 
 from game_logic import GameLogic
@@ -13,11 +14,19 @@ controls = {
     'a': 'left',
     's': 'backward',
     'd': 'right',
+    'w-repeat': 'forward',
+    'a-repeat': 'left',
+    's-repeat': 'backward',
+    'd-repeat': 'right',
     'q': 'toggleTexture',
+    'escape': 'toggleMouseMove',
 }
 
 class Main(ShowBase):
     def go(self):
+        pub.subscribe(self.new_player_object, 'create')
+        self.player = None
+
         # load the world
         self.game_logic.load_world()
 
@@ -40,7 +49,20 @@ class Main(ShowBase):
         for key in controls:
             self.accept(key, self.input_event, [controls[key]])
 
+        self.SpeedRot = 0.05
+        self.CursorOffOn = 'Off'
+        self.props = WindowProperties()
+        self.props.setCursorHidden(True)
+        self.win.requestProperties(self.props)
+
         self.run()
+
+    def new_player_object(self, game_object):
+        if game_object.kind != "player":
+            return
+
+        self.player = game_object
+
 
     def get_nearest_object(self):
         self.pickerRay.setFromLens(self.camNode, 0, 0)
@@ -59,12 +81,41 @@ class Main(ShowBase):
         self.input_events[event] = True
 
     def tick(self, task):
+        if 'toggleMouseMove' in self.input_events:
+            if self.CursorOffOn == 'Off':
+                self.CursorOffOn = 'On'
+                self.props.setCursorHidden(False)
+            else:
+                self.CursorOffOn = 'Off'
+                self.props.setCursorHidden(True)
+
+            self.win.requestProperties(self.props)
+
         if self.input_events:
             pub.sendMessage('input', events=self.input_events)
 
         picked_object = self.get_nearest_object()
         if picked_object:
             picked_object.selected()
+
+        if self.CursorOffOn == 'Off':
+            md = self.win.getPointer(0)
+            x = md.getX()
+            y = md.getY()
+            if self.win.movePointer(0, base.win.getXSize() // 2, self.win.getYSize() // 2):
+                self.player.z_rotation = self.camera.getH() - (x - self.win.getXSize() / 2) * self.SpeedRot
+                self.player.x_rotation = self.camera.getP() - (y - self.win.getYSize() / 2) * self.SpeedRot
+
+                if self.player.x_rotation <= -90.1:
+                    self.player.x_rotation = -90
+                if self.player.x_rotation >= 90.1:
+                    self.player.x_rotation = 90
+
+        h = self.player.z_rotation
+        p = self.player.x_rotation
+        r = self.player.y_rotation
+        self.camera.setHpr(h, p, r)
+        self.camera.set_pos(*self.player.position)
 
         # give the model and view a chance to do something
         self.game_logic.tick()

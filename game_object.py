@@ -3,6 +3,9 @@ class GameObject:
         self.position = position
         self.kind = kind
         self.id = id
+        self.x_rotation = 0
+        self.y_rotation = 0
+        self.z_rotation = 0
 
     def tick(self):
         pass

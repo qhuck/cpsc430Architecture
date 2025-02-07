@@ -30,6 +30,11 @@ class ViewObject:
             self.toggle_texture_pressed = True
 
     def tick(self):
+        h = self.game_object.z_rotation
+        p = self.game_object.x_rotation
+        r = self.game_object.y_rotation
+        self.cube.setHpr(h, p, r)
+
         if self.toggle_texture_pressed and self.is_selected:
             if self.texture_on:
                 self.texture_on = False
