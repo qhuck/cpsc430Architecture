@@ -3,10 +3,11 @@ from pubsub import pub
 from game_object import GameObject
 
 class PlayerObject(GameObject):
-    def __init__(self, position, kind, id):
-        super().__init__(position, kind, id)
+    def __init__(self, position, kind, id, size):
+        super().__init__(position, kind, id, size)
         pub.subscribe(self.input_event, 'input')
 
+        self.old_position = position
         self.speed = 0.1
 
     def input_event(self, events=None):
@@ -45,5 +46,12 @@ class PlayerObject(GameObject):
                 delta_z = right[2]
 
             if delta_x is not None:
+                self.old_position = self.position
+
                 x, y, z = self.position
                 self.position = (x + delta_x*self.speed, y + delta_y*self.speed, z + delta_z*self.speed)
+
+    def collision(self, other):
+        if self.old_position:
+            self.position = self.old_position
+

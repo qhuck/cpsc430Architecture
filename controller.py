@@ -3,7 +3,7 @@ from direct.task import Task
 import sys
 
 from panda3d.core import CollisionNode, GeomNode, CollisionRay, CollisionHandlerQueue, CollisionTraverser, \
-    WindowProperties
+    WindowProperties, Quat
 from pubsub import pub
 
 from game_logic import GameLogic
@@ -25,7 +25,13 @@ controls = {
 class Main(ShowBase):
     def go(self):
         pub.subscribe(self.new_player_object, 'create')
+        pub.subscribe(self.new_collider, 'collider')
+
         self.player = None
+
+        self.cTrav = CollisionTraverser()
+        self.collision_queue = CollisionHandlerQueue()
+        # self.cTrav.show_collisions(self.render)
 
         # load the world
         self.game_logic.load_world()
@@ -35,13 +41,13 @@ class Main(ShowBase):
         self.taskMgr.add(self.tick)
 
         picker_node = CollisionNode('mouseRay')
+        picker_node.set_into_collide_mask(0)
         picker_np = self.camera.attachNewNode(picker_node)
         picker_node.setFromCollideMask(GeomNode.getDefaultCollideMask())
         self.pickerRay = CollisionRay()
         picker_node.addSolid(self.pickerRay)
         picker_np.show()
         self.rayQueue = CollisionHandlerQueue()
-        self.cTrav = CollisionTraverser()
         self.cTrav.addCollider(picker_np, self.rayQueue)
 
 
@@ -56,6 +62,9 @@ class Main(ShowBase):
         self.win.requestProperties(self.props)
 
         self.run()
+
+    def new_collider(self, collider):
+        self.cTrav.addCollider(collider, self.collision_queue)
 
     def new_player_object(self, game_object):
         if game_object.kind != "player":
@@ -81,6 +90,12 @@ class Main(ShowBase):
         self.input_events[event] = True
 
     def tick(self, task):
+        for entry in self.collision_queue.entries:
+            into_go = entry.into_node.get_python_tag('game_object')
+            from_go = entry.from_node.get_python_tag('game_object')
+            into_go.collision(from_go)
+            from_go.collision(into_go)
+
         if 'toggleMouseMove' in self.input_events:
             if self.CursorOffOn == 'Off':
                 self.CursorOffOn = 'On'
@@ -115,7 +130,17 @@ class Main(ShowBase):
         p = self.player.x_rotation
         r = self.player.y_rotation
         self.camera.setHpr(h, p, r)
-        self.camera.set_pos(*self.player.position)
+
+        q = Quat()
+        q.setHpr((h, p, r))
+        forward = q.getForward()
+        delta_x = -forward[0]
+        delta_y = -forward[1]
+        delta_z = -forward[2]
+        x, y, z = self.player.position
+        distance_factor = 0.5
+        self.camera.set_pos(x + delta_x * distance_factor, y +
+                            delta_y * distance_factor, z + delta_z * distance_factor)
 
         # give the model and view a chance to do something
         self.game_logic.tick()
