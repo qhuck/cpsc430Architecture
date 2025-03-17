@@ -4,6 +4,9 @@ from pubsub import pub
 class ViewObject:
     def __init__(self, game_object):
         self.game_object = game_object
+        if game_object.kind == "key":
+            self.cube = base.loader.loadModel("models/key")
+        else:
         self.cube = base.loader.loadModel("models/cube")
         self.cube.reparentTo(base.render)
 

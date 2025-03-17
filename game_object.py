@@ -1,7 +1,7 @@
 class GameObject:
     def __init__(self, position, kind, id, size):
         self.position = position
-        self.kind = kind
+        self._kind = kind
         self.id = id
         self.x_rotation = 0
         self.y_rotation = 0
@@ -20,6 +20,10 @@ class GameObject:
     @property
     def size(self):
         return self._size
+
+    @property
+    def kind(self):
+        return self._kind
 
     @size.setter
     def size(self, value):
