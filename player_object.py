@@ -54,4 +54,17 @@ class PlayerObject(GameObject):
     def collision(self, other):
         if self.old_position:
             self.position = self.old_position
+        print(f"{self.kind} collided with {other.kind}, id {other.id}")
+        if other.kind == "key":
+            '''self.inventory.append(other)
+            '''
+            pub.sendMessage('remove', game_object=other)
 
+        '''if other.kind == "door":
+            for item in self.inventory:
+                if item.kind == "key":
+                    other.remove()
+                    pub.sendMessage('remove', game_object=other)
+                    self.inventory.remove(item)
+                    break
+'''

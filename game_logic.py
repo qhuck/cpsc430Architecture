@@ -22,7 +22,6 @@ class GameLogic:
 
         self.next_id += 1
         self.game_objects[obj.id] = obj
-
         pub.sendMessage('create', game_object=obj)
         return obj
 
@@ -41,3 +40,6 @@ class GameLogic:
 
     def set_property(self, key, value):
         self.properties[key] = value
+
+    def remove(self, game_object):
+        pass

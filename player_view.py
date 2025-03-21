@@ -9,6 +9,16 @@ class PlayerView:
         self.view_objects = {}
 
         pub.subscribe(self.new_game_object, 'create')
+        pub.subscribe(self.new_remove_object, 'remove')
+
+
+    def new_remove_object(self, game_object):
+        print("hello")
+        for remove_object in self.view_objects:
+            if self.view_objects[remove_object].game_object == game_object:
+                del self.view_objects[remove_object]
+                self.view_objects[remove_object].delete()
+                break
 
     def new_game_object(self, game_object):
         view_object = ViewObject(game_object)

@@ -7,7 +7,7 @@ class ViewObject:
         if game_object.kind == "key":
             self.cube = base.loader.loadModel("models/key")
         else:
-        self.cube = base.loader.loadModel("models/cube")
+            self.cube = base.loader.loadModel("models/cube")
         self.cube.reparentTo(base.render)
 
         self.cube.setTag('selectable', '')
@@ -23,8 +23,10 @@ class ViewObject:
         self.cube.setScale(x_scale, y_scale, z_scale)
 
         self.cube.setPos(*game_object.position)
-        self.cube_texture = base.loader.loadTexture("textures/crate.png")
-        self.cube.setTexture(self.cube_texture)
+        if game_object.kind == "crate":
+            self.cube_texture = base.loader.loadTexture("textures/crate.png")
+            self.cube.setTexture(self.cube_texture)
+
         self.toggle_texture_pressed = False
         self.texture_on = True
         self.is_selected = False
@@ -42,6 +44,9 @@ class ViewObject:
             pub.sendMessage("collider", collider=self.collider)
 
         pub.subscribe(self.toggle_texture, 'input')
+
+    def __delete__(self):
+        pass
 
     def deleted(self):
         self.cube.setPythonTag("owner", None)
