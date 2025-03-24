@@ -6,7 +6,7 @@ class PlayerObject(GameObject):
     def __init__(self, position, kind, id, size):
         super().__init__(position, kind, id, size)
         pub.subscribe(self.input_event, 'input')
-
+        self.inventory = []
         self.old_position = position
         self.speed = 0.1
 
@@ -56,15 +56,18 @@ class PlayerObject(GameObject):
             self.position = self.old_position
         print(f"{self.kind} collided with {other.kind}, id {other.id}")
         if other.kind == "key":
-            '''self.inventory.append(other)
-            '''
-            pub.sendMessage('remove', game_object=other)
+            self.inventory.append(other)
 
-        '''if other.kind == "door":
+            pub.sendMessage('remove', game_object=other)
+            print(f"Key collected! Inventory now contains {len(self.inventory)} items(s).")
+
+        if other.kind == "door":
             for item in self.inventory:
                 if item.kind == "key":
-                    other.remove()
                     pub.sendMessage('remove', game_object=other)
                     self.inventory.remove(item)
+                    print("Door unlocked! You used the key.")
                     break
-'''
+            else:
+                print("You need a key to unlock this door!")
+

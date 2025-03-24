@@ -45,8 +45,8 @@ class ViewObject:
 
         pub.subscribe(self.toggle_texture, 'input')
 
-    def __delete__(self):
-        pass
+    def delete(self):
+        self.cube.removeNode()
 
     def deleted(self):
         self.cube.setPythonTag("owner", None)

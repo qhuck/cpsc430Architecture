@@ -34,3 +34,4 @@ class GameObject:
 
     def collision(self, other):
         print(f"{self.kind} collided with {other.kind}, id {other.id}")
+

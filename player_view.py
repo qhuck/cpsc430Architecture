@@ -16,8 +16,8 @@ class PlayerView:
         print("hello")
         for remove_object in self.view_objects:
             if self.view_objects[remove_object].game_object == game_object:
-                del self.view_objects[remove_object]
                 self.view_objects[remove_object].delete()
+                del self.view_objects[remove_object]
                 break
 
     def new_game_object(self, game_object):
