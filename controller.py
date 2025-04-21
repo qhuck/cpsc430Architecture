@@ -36,7 +36,7 @@ class Main(ShowBase):
         # load the world
         self.game_logic.load_world()
 
-        self.camera.set_pos(0, -20, 0)
+        self.camera.set_pos(0, 5, 0)
         self.camera.look_at(0, 0, 0)
         self.taskMgr.add(self.tick)
 
@@ -129,7 +129,7 @@ class Main(ShowBase):
         h = self.player.z_rotation
         p = self.player.x_rotation
         r = self.player.y_rotation
-        self.camera.setHpr(h, p, r)
+        '''self.camera.setHpr(h, p, r)'''
 
         q = Quat()
         q.setHpr((h, p, r))

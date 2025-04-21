@@ -52,22 +52,6 @@ class PlayerObject(GameObject):
                 self.position = (x + delta_x*self.speed, y + delta_y*self.speed, z + delta_z*self.speed)
 
     def collision(self, other):
-        if self.old_position:
-            self.position = self.old_position
-        print(f"{self.kind} collided with {other.kind}, id {other.id}")
-        if other.kind == "key":
-            self.inventory.append(other)
+       exit()
 
-            pub.sendMessage('remove', game_object=other)
-            print(f"Key collected! Inventory now contains {len(self.inventory)} items(s).")
-
-        if other.kind == "door":
-            for item in self.inventory:
-                if item.kind == "key":
-                    pub.sendMessage('remove', game_object=other)
-                    self.inventory.remove(item)
-                    print("Door unlocked! You used the key.")
-                    break
-            else:
-                print("You need a key to unlock this door!")
 

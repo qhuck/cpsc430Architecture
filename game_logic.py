@@ -2,7 +2,7 @@ from game_object import GameObject
 from pubsub import pub
 
 from player_object import PlayerObject
-
+from Object import Object
 
 class GameLogic:
     def __init__(self):
@@ -18,7 +18,7 @@ class GameLogic:
         if kind == "player":
             obj = PlayerObject(position, kind, self.next_id, size)
         else:
-            obj = GameObject(position, kind, self.next_id, size)
+            obj = Object(position, kind, self.next_id, size)
 
         self.next_id += 1
         self.game_objects[obj.id] = obj
@@ -26,11 +26,8 @@ class GameLogic:
         return obj
 
     def load_world(self):
-        self.create_object([0, 0, 0.5], "door", (1, 1, 2))
-        self.create_object([-3, 0, 0], "crate", (1, 1, 1))
-        self.create_object([3, 0, 0], "crate", (1, 1, 1))
-        self.create_object([0, -10, 0], "player", (1, 1, 1))
-        self.create_object([6, 6, 0], "key", (0.2, 0.2, 0.2))
+        self.create_object([0, 10, 0], "player", (1, 1, 1))
+        self.create_object([0, -9, 0], "object", (0.3, 0.3, 0.3))
 
     def get_property(self, key):
         if key in self.properties:

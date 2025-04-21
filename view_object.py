@@ -4,10 +4,10 @@ from pubsub import pub
 class ViewObject:
     def __init__(self, game_object):
         self.game_object = game_object
-        if game_object.kind == "key":
-            self.cube = base.loader.loadModel("models/key")
+        if game_object.kind == "player":
+            self.cube = base.loader.loadModel("models/Fighter/Fighter")
         else:
-            self.cube = base.loader.loadModel("models/cube")
+            self.cube = base.loader.loadModel("models/Dropship/Dropship")
         self.cube.reparentTo(base.render)
 
         self.cube.setTag('selectable', '')
@@ -23,9 +23,6 @@ class ViewObject:
         self.cube.setScale(x_scale, y_scale, z_scale)
 
         self.cube.setPos(*game_object.position)
-        if game_object.kind == "crate":
-            self.cube_texture = base.loader.loadTexture("textures/crate.png")
-            self.cube.setTexture(self.cube_texture)
 
         self.toggle_texture_pressed = False
         self.texture_on = True
@@ -65,12 +62,5 @@ class ViewObject:
         self.cube.setHpr(h, p, r)
         self.cube.set_pos(*self.game_object.position)
 
-        if self.toggle_texture_pressed and self.is_selected:
-            if self.texture_on:
-                self.texture_on = False
-                self.cube.setTextureOff(1)
-            else:
-                self.texture_on = True
-                self.cube.setTexture(self.cube_texture)
 
-            self.toggle_texture_pressed = False
+
