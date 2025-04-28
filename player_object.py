@@ -18,18 +18,16 @@ class PlayerObject(GameObject):
             delta_y = None
             delta_z = None
             if 'forward' in events:
-                forward = q.getForward()
-
-                delta_x = forward[0]
-                delta_y = forward[1]
-                delta_z = forward[2]
+                delta_x = 0
+                delta_y = 0
+                delta_z = 1
 
             if 'backward' in events:
                 forward = q.getForward()
 
-                delta_x = -forward[0]
-                delta_y = -forward[1]
-                delta_z = -forward[2]
+                delta_x = 0
+                delta_y = 0
+                delta_z = -1
 
             if 'left' in events:
                 right = q.getRight()

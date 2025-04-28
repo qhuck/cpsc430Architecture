@@ -37,7 +37,7 @@ class Main(ShowBase):
         self.game_logic.load_world()
 
         self.camera.set_pos(0, 5, 0)
-        self.camera.look_at(0, 0, 0)
+        self.camera.look_at(0, 10, 0)
         self.taskMgr.add(self.tick)
 
         picker_node = CollisionNode('mouseRay')
@@ -117,30 +117,7 @@ class Main(ShowBase):
             md = self.win.getPointer(0)
             x = md.getX()
             y = md.getY()
-            if self.win.movePointer(0, base.win.getXSize() // 2, self.win.getYSize() // 2):
-                self.player.z_rotation = self.camera.getH() - (x - self.win.getXSize() / 2) * self.SpeedRot
-                self.player.x_rotation = self.camera.getP() - (y - self.win.getYSize() / 2) * self.SpeedRot
 
-                if self.player.x_rotation <= -90.1:
-                    self.player.x_rotation = -90
-                if self.player.x_rotation >= 90.1:
-                    self.player.x_rotation = 90
-
-        h = self.player.z_rotation
-        p = self.player.x_rotation
-        r = self.player.y_rotation
-        '''self.camera.setHpr(h, p, r)'''
-
-        q = Quat()
-        q.setHpr((h, p, r))
-        forward = q.getForward()
-        delta_x = -forward[0]
-        delta_y = -forward[1]
-        delta_z = -forward[2]
-        x, y, z = self.player.position
-        distance_factor = 0.5
-        self.camera.set_pos(x + delta_x * distance_factor, y +
-                            delta_y * distance_factor, z + delta_z * distance_factor)
 
         # give the model and view a chance to do something
         self.game_logic.tick()

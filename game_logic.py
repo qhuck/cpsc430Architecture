@@ -26,7 +26,7 @@ class GameLogic:
         return obj
 
     def load_world(self):
-        self.create_object([0, 10, 0], "player", (1, 1, 1))
+        self.create_object([0, 10, 0], "player", (0.3, 0.3, 0.3))
         self.create_object([0, -9, 0], "object", (0.3, 0.3, 0.3))
 
     def get_property(self, key):
